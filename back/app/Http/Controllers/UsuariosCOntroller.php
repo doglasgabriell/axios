@@ -45,4 +45,15 @@ class UsuariosCOntroller extends Controller
             "data" => $usuario
         ], 200);
     }
+
+    public function destroy(int $id) {
+        $dados = Usuarios::findOrFail($id);
+
+        $dados->delete();
+
+        return response()->json([
+            "message" => "Dado excluído com sucesso",
+            "data" => $dados
+        ]);
+    }
 }
