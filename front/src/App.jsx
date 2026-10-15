@@ -1,6 +1,7 @@
 import { useState } from "react"
 import axios from "axios";
 import { LoaderCircle } from "lucide-react";
+import { CircleX } from "lucide-react";
 
 function App() {
 
@@ -55,7 +56,7 @@ function App() {
       e.preventDefault();
       try {
         const { data } = await axios.put(
-          `http://127.0.0.1:8000/api/atualizar-registro/1`,
+          `http://127.0.0.1:8000/api/atualizar-registro/3`,
           {
             nome: nameUpdate,
             email: emailUpdate
@@ -66,6 +67,23 @@ function App() {
 
         setNameUpdate("");
         setEmailUpdate("");
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+
+    // D => DELETE
+    const [dadosDelete, setdadosDelete] = useState([]);
+    const [destroy, setDestroy] = useState(true);
+
+
+    async function deletarRegistro() {
+      try {
+        const { data } = await axios.delete("http://127.0.0.1:8000/api/deletar-registro/3");
+        setdadosDelete(data.data);
+        console.log(data);
+        setDestroy(false);
       } catch (error) {
         console.error(error);
       }
@@ -143,7 +161,7 @@ function App() {
                     <ul className="p-2 text-white font-bold">
                         {
                           dados.map((user) => (
-                              <li key={user.id}>Nome do Usuário: {user.nome} | Email do usuário: {user.email}</li>
+                              <li key={user.id}>ID do usuario: {user.id} Nome do Usuário: {user.nome} | Email do usuário: {user.email}</li>
                           ))
                         }
                     </ul>
@@ -186,7 +204,7 @@ function App() {
 
 
                       {/* Botao de envio de requisição via post com AXIOS */}
-                      <button className="bg-amber-700 p-2 text-white font-bold rounded-full" type="submit">Enviar requisição via AXIOS</button>
+                      <button className="bg-amber-700 p-2 cursor-pointer text-white font-bold rounded-full" type="submit">Enviar requisição via AXIOS</button>
                   </form>
 
               {/* footer */}
@@ -208,10 +226,36 @@ function App() {
 
           {/* D => DELETE */}
             <div className="flex flex-col col-start-2 row-start-2 rounded-lg items-center bg-green-600 shadow-xl p-3 gap-3">
-                
+                {/* Cabecalho */}
+                <div className="flex flex-col justify-center items-center px-5 rounded-full text-center h-1/4 font-bold bg-amber-50 shadow-xl">
+                  <h2 className="text-3xl text-green-700 animate-pulse">Axios - DELETE</h2>
+                  <p className="text-zinc-900">Excluido dados existente via axios por metodo delete</p>
+                </div>
+
+                  {/* Conteúdo */}
+                <div className="flex flex-col  items-center bg-zinc-200 h-full w-full shadow-2xl rounded-lg">
+                  <div className="flex flex-col gap-3 justify-center items-center p-5">
+                    <h2 className="text-2xl font-bold text-green-700 animate-pulse">Clique no botão abaixo para excluir uma requisições via AXIOS</h2>
+                    <button onClick={deletarRegistro} className="bg-green-700 p-4 rounded-full shadow-xl text-white font-bold hover:scale-105 hover:bg-green-500 transition-all">Excluir dados...</button>
+                  </div>
+                  
+                  {
+                  destroy ? <CircleX className="mt-6 animate-ping" color="green" size={100} /> : <div className="flex flex-col items-center justify-center bg-blue-600 rounded-xl ">
+                    <ul className="p-2 text-white font-bold">
+                        {
+                          dadosDelete.map((d) => (
+                              <li key={d.id}>ID do usuario: {d.id} Nome do Usuário: {d.nome} | Email do usuário: {d.email}</li>
+                          ))
+                        }
+                    </ul>
+                  </div>
+                } 
+
+                </div>
             </div>
       </main>
     </>
+
   )
 }
 
